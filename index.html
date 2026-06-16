@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kaizen Leap — Propuesta 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Outfit:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --g1:#D4A843;--g2:#F0C96A;--g3:#A87228;
+  --fire:#C93A0C;--fire2:#E8520A;
+  --ink:#080400;--ink2:#100800;--card:#130900;
+  --cream:#F2E8D0;--muted:#9A8060;--white:#FFF8EE;
+  --c1:#F0C96A;--c2:#B8D8FF;--c3:#B0E8C0;--c4:#D8C0F0;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;cursor:none !important;}
+html{scroll-behavior:smooth;}
+body{background:var(--ink);color:var(--cream);font-family:'Outfit',sans-serif;overflow-x:hidden;}
+
+/* CURSOR - canvas based */
+#cursor-canvas{position:fixed;top:0;left:0;pointer-events:none;z-index:9999;}
+body.cur-hover .pkg,body.cur-hover a,body.cur-hover button{}
+#canvas{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.3;}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");pointer-events:none;z-index:998;opacity:.45;}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;position:relative;overflow:hidden;padding:80px 24px 120px;z-index:2;}
+.hero-glow{position:absolute;inset:0;background:radial-gradient(ellipse 90% 70% at 50% 20%,rgba(212,168,67,.13) 0%,transparent 60%),radial-gradient(ellipse 50% 40% at 85% 75%,rgba(201,58,12,.09) 0%,transparent 55%),radial-gradient(ellipse 40% 35% at 15% 80%,rgba(212,168,67,.06) 0%,transparent 55%);}
+.hr1,.hr2,.hr3{position:absolute;border-radius:50%;border:1px solid rgba(212,168,67,.06);}
+.hr1{width:700px;height:700px;top:50%;left:50%;transform:translate(-50%,-50%);animation:spin 60s linear infinite;}
+.hr2{width:480px;height:480px;top:50%;left:50%;transform:translate(-50%,-50%);animation:spin 38s linear infinite reverse;}
+.hr3{width:290px;height:290px;top:50%;left:50%;transform:translate(-50%,-50%);animation:spin 24s linear infinite;border-color:rgba(201,58,12,.07);}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg);}}
+.hero-yr{position:absolute;font-family:'Playfair Display',serif;font-size:clamp(180px,28vw,360px);font-weight:900;font-style:italic;color:rgba(212,168,67,.035);top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap;pointer-events:none;line-height:1;animation:drift 9s ease-in-out infinite;}
+@keyframes drift{0%,100%{transform:translate(-50%,-50%) scale(1);}50%{transform:translate(-50%,-52%) scale(1.02);}}
+.logo-wrap{position:relative;margin-bottom:44px;animation:heroIn .9s cubic-bezier(.16,1,.3,1) both;}
+.logo-glow-ring{position:absolute;inset:-22px;border-radius:50%;background:radial-gradient(circle,rgba(212,168,67,.14),transparent 70%);animation:breathe 3.5s ease-in-out infinite;}
+@keyframes breathe{0%,100%{transform:scale(.88);opacity:.5;}50%{transform:scale(1.12);opacity:1;}}
+.logo-svg{width:134px;height:134px;position:relative;z-index:1;filter:drop-shadow(0 0 38px rgba(212,168,67,.55));}
+.eyebrow{font-size:10px;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--g1);margin-bottom:22px;animation:heroIn .9s cubic-bezier(.16,1,.3,1) .1s both;}
+.eyebrow span{margin:0 10px;opacity:.4;}
+.hero-h1{font-family:'Playfair Display',serif;font-size:clamp(58px,10vw,128px);font-weight:900;line-height:.9;color:var(--white);letter-spacing:-2px;margin-bottom:16px;animation:heroIn .9s cubic-bezier(.16,1,.3,1) .15s both;}
+.hero-h1 em{font-style:italic;background:linear-gradient(135deg,var(--g2),var(--fire2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-sub{font-size:12px;font-weight:500;letter-spacing:5px;text-transform:uppercase;color:var(--muted);margin-bottom:44px;animation:heroIn .9s cubic-bezier(.16,1,.3,1) .2s both;}
+.hero-line{width:100px;height:1px;margin:0 auto 44px;background:linear-gradient(to right,transparent,var(--g1),var(--fire),transparent);animation:heroIn .9s cubic-bezier(.16,1,.3,1) .25s both;}
+.hero-p{font-size:16px;font-weight:300;color:rgba(242,232,208,.72);max-width:500px;line-height:1.95;animation:heroIn .9s cubic-bezier(.16,1,.3,1) .3s both;}
+.hero-p strong{color:var(--g2);font-weight:500;}
+@keyframes heroIn{from{opacity:0;transform:translateY(40px);}to{opacity:1;transform:translateY(0);}}
+.scroll-ind{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;animation:heroIn 1s ease .9s both;}
+.scroll-ind span{font-size:8px;letter-spacing:4px;color:rgba(212,168,67,.38);text-transform:uppercase;}
+.scroll-track{width:1px;height:58px;background:linear-gradient(to bottom,rgba(212,168,67,.6),transparent);animation:tDrop 1.9s ease-in-out infinite;}
+@keyframes tDrop{0%{transform:scaleY(0);transform-origin:top;}49%{transform:scaleY(1);transform-origin:top;}50%{transform:scaleY(1);transform-origin:bottom;}100%{transform:scaleY(0);transform-origin:bottom;}}
+
+/* BUTTONS */
+.btn-gold{background:linear-gradient(135deg,var(--g1),var(--g3));color:var(--ink);font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:17px 44px;border:none;cursor:none;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));transition:all .3s ease;text-decoration:none;display:inline-block;box-shadow:0 8px 30px rgba(212,168,67,.25);position:relative;overflow:hidden;}
+.btn-gold::after{content:'';position:absolute;inset:0;background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.25) 50%,transparent 70%);transform:translateX(-100%);transition:transform .5s ease;}
+.btn-gold:hover::after{transform:translateX(100%);}
+.btn-gold:hover{transform:translateY(-3px);box-shadow:0 18px 55px rgba(212,168,67,.42);}
+.btn-ghost{background:transparent;color:var(--g2);font-size:12px;font-weight:600;letter-spacing:3px;text-transform:uppercase;padding:16px 44px;border:1px solid rgba(212,168,67,.3);cursor:none;transition:all .3s ease;text-decoration:none;display:inline-block;font-family:'Outfit',sans-serif;}
+.btn-ghost:hover{border-color:var(--g1);background:rgba(212,168,67,.06);transform:translateY(-3px);}
+.cta-row{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
+
+/* STATS */
+.stats{position:relative;z-index:2;border-top:1px solid rgba(212,168,67,.1);border-bottom:1px solid rgba(212,168,67,.1);background:rgba(212,168,67,.028);}
+.stats-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);}
+.stat{padding:46px 20px;text-align:center;border-right:1px solid rgba(212,168,67,.08);transition:background .35s,transform .35s;}
+.stat:last-child{border-right:none;}
+.stat:hover{background:rgba(212,168,67,.06);transform:translateY(-3px);}
+.stat-n{font-family:'Playfair Display',serif;font-size:58px;font-weight:700;background:linear-gradient(135deg,var(--g2),var(--fire2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;display:block;}
+.stat-l{font-size:10px;font-weight:600;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-top:8px;display:block;line-height:1.4;}
+
+/* LAYOUT */
+.wrap{max-width:1100px;margin:0 auto;padding:0 24px;}
+.sec{padding:110px 0;position:relative;z-index:2;}
+.sec-eye{font-size:10px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--g1);display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+.sec-eye::before{content:'';width:28px;height:1px;background:var(--g1);}
+.sec-h{font-family:'Playfair Display',serif;font-size:clamp(40px,5vw,72px);font-weight:700;line-height:1.0;color:var(--white);margin-bottom:28px;}
+.sec-h em{font-style:italic;color:var(--g2);}
+.div-line{border:none;max-width:1100px;margin:0 auto;height:1px;background:linear-gradient(to right,transparent,rgba(212,168,67,.22),transparent);}
+
+/* ABOUT */
+.about-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:80px;align-items:start;margin-top:60px;}
+.about-body p{font-size:15px;font-weight:300;color:rgba(242,232,208,.75);line-height:2.05;margin-bottom:20px;}
+.about-body strong{color:var(--g2);font-weight:500;}
+.pill-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:32px;}
+.pill{background:rgba(212,168,67,.07);border:1px solid rgba(212,168,67,.18);padding:9px 18px;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--g2);border-radius:2px;transition:all .3s;cursor:default;}
+.pill:hover{background:rgba(212,168,67,.15);border-color:var(--g1);transform:translateY(-2px);}
+
+/* MISSION/VISION MERGED CARD */
+.mv-unified{
+  background:linear-gradient(160deg,rgba(212,168,67,.07),rgba(201,58,12,.04),rgba(212,168,67,.03));
+  border:1px solid rgba(212,168,67,.2);
+  border-top:2px solid var(--g1);
+  padding:40px 38px;position:relative;overflow:hidden;
+  transition:transform .4s,box-shadow .4s;
+}
+.mv-unified:hover{transform:translateY(-5px);box-shadow:0 20px 60px rgba(0,0,0,.4);}
+.mv-unified::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(212,168,67,.08),transparent 70%);pointer-events:none;}
+.mv-header{display:flex;align-items:center;gap:12px;margin-bottom:28px;}
+.mv-header-dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,var(--g2),var(--fire));}
+.mv-header-tag{font-size:9px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--g1);}
+.mv-block{padding:20px 0;}
+.mv-block+.mv-block{border-top:1px solid rgba(212,168,67,.12);padding-top:22px;}
+.mv-block-label{font-size:8px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--g3);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.mv-block-label::before{content:'';width:14px;height:1px;background:var(--g3);}
+.mv-block p{font-size:13px;font-weight:300;color:rgba(242,232,208,.72);line-height:1.85;font-style:italic;}
+
+/* PACKAGES */
+.pkg-sec{padding:110px 0;position:relative;z-index:2;}
+.pkg-sec-bg{position:absolute;inset:0;background:linear-gradient(180deg,transparent,rgba(212,168,67,.022),transparent);}
+.pkg-head{text-align:center;max-width:620px;margin:0 auto 80px;}
+.pkg-head p{font-size:15px;font-weight:300;color:var(--muted);line-height:1.9;}
+.pkg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;}
+.pkg{background:var(--card);padding:54px 40px;position:relative;overflow:hidden;transition:transform .5s cubic-bezier(.16,1,.3,1),box-shadow .5s;cursor:none;}
+.pkg::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(212,168,67,.05),transparent 60%);opacity:0;transition:opacity .4s;}
+.pkg:hover::before{opacity:1;}
+.pkg:hover{transform:translateY(-10px);box-shadow:0 30px 80px rgba(0,0,0,.5);}
+.pkg-featured{border-top:2px solid var(--g1);background:linear-gradient(160deg,rgba(212,168,67,.1),rgba(201,58,12,.05),var(--card));}
+.feat-badge{position:absolute;top:0;right:0;background:linear-gradient(135deg,var(--g1),var(--fire));color:var(--ink);font-size:7px;font-weight:800;letter-spacing:3px;padding:5px 16px;text-transform:uppercase;}
+.pkg-bg-n{position:absolute;top:12px;right:16px;font-family:'Playfair Display',serif;font-size:100px;font-weight:900;color:rgba(212,168,67,.04);line-height:1;pointer-events:none;font-style:italic;}
+.pkg-eyebrow{font-size:9px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--g1);margin-bottom:10px;display:block;}
+.pkg-name{font-family:'Playfair Display',serif;font-size:40px;font-weight:700;color:var(--white);line-height:1;margin-bottom:10px;}
+.pkg-tagline{font-size:13px;font-weight:300;color:var(--muted);font-style:italic;margin-bottom:34px;padding-bottom:26px;border-bottom:1px solid rgba(212,168,67,.12);line-height:1.65;}
+
+/* FEATURE LIST - no emojis, better colors */
+.feat-list{list-style:none;margin-bottom:46px;}
+.feat-list li{font-size:13px;font-weight:400;color:rgba(242,232,208,.72);padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:flex-start;gap:12px;line-height:1.55;}
+.feat-list li::before{content:'';width:6px;height:6px;border-radius:50%;margin-top:5px;flex-shrink:0;}
+/* tier1 = videos - gold */
+.feat-list li.t1{color:var(--g2);font-weight:600;font-size:14px;}
+.feat-list li.t1::before{background:linear-gradient(135deg,var(--g2),var(--g1));width:8px;height:8px;}
+/* tier2 = photos/stories - soft blue */
+.feat-list li.t2{color:#C4DCF8;font-weight:500;}
+.feat-list li.t2::before{background:linear-gradient(135deg,#90C0F0,#5090D0);}
+/* tier3 = graphics/copy/social - soft green */
+.feat-list li.t3{color:#A8DDB8;font-weight:400;}
+.feat-list li.t3::before{background:linear-gradient(135deg,#70C090,#389060);}
+/* tier4 = calendar/reports/campaigns - muted cream */
+.feat-list li.t4{color:rgba(242,232,208,.58);font-weight:300;font-size:12px;}
+.feat-list li.t4::before{background:var(--muted);}
+/* presenter - gold highlight */
+.feat-list li.tp{color:var(--g2);font-weight:600;background:linear-gradient(90deg,rgba(212,168,67,.09),transparent);border-bottom:1px solid rgba(212,168,67,.18) !important;border-radius:0 4px 4px 0;padding-left:8px;margin-top:6px;}
+.feat-list li.tp::before{background:linear-gradient(135deg,var(--g2),var(--fire2));width:8px;height:8px;}
+
+.pkg-price{font-family:'Playfair Display',serif;font-size:48px;font-weight:700;background:linear-gradient(135deg,var(--g2),var(--fire2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:5px;position:relative;display:inline-block;}
+.pkg-per{font-size:11px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;}
+/* shimmer on price */
+.pkg:hover .pkg-price::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);animation:shimmer .6s ease;}
+@keyframes shimmer{from{transform:translateX(-100%);}to{transform:translateX(100%);}}
+
+/* METHODOLOGY */
+.meth-sec{padding:110px 0;position:relative;z-index:2;background:linear-gradient(180deg,transparent,rgba(212,168,67,.02),transparent);}
+.meth-hero{background:linear-gradient(135deg,rgba(212,168,67,.1),rgba(201,58,12,.06));border:1px solid rgba(212,168,67,.25);border-left:3px solid var(--g1);padding:44px 48px;margin-bottom:50px;position:relative;overflow:hidden;transition:transform .4s;}
+.meth-hero:hover{transform:translateX(6px);}
+.meth-hero::after{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(212,168,67,.08),transparent 70%);pointer-events:none;}
+.meth-hero-tag{font-size:9px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--g1);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+.meth-hero-tag::before{content:'';width:20px;height:1px;background:var(--g1);}
+.meth-hero h3{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:var(--white);margin-bottom:14px;line-height:1.1;}
+.meth-hero p{font-size:15px;font-weight:300;color:rgba(242,232,208,.75);line-height:1.95;max-width:680px;}
+.meth-hero strong{color:var(--g2);font-weight:500;}
+.meth-two{display:grid;grid-template-columns:1fr 1fr;gap:2px;}
+.meth-card{background:var(--card);padding:40px 38px;border-top:2px solid;transition:transform .4s,box-shadow .4s;position:relative;overflow:hidden;}
+.meth-card:first-child{border-top-color:var(--g1);}
+.meth-card:last-child{border-top-color:var(--fire);}
+.meth-card:hover{transform:translateY(-6px);box-shadow:0 20px 60px rgba(0,0,0,.4);}
+.meth-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(212,168,67,.04),transparent 60%);opacity:0;transition:opacity .4s;}
+.meth-card:hover::before{opacity:1;}
+.meth-n{font-family:'Playfair Display',serif;font-size:72px;font-weight:900;color:rgba(212,168,67,.05);position:absolute;top:10px;right:14px;line-height:1;font-style:italic;}
+.meth-tag{font-size:9px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--g1);margin-bottom:12px;}
+.meth-card:last-child .meth-tag{color:var(--fire2);}
+.meth-card h4{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--white);margin-bottom:12px;line-height:1.1;}
+.meth-card p{font-size:14px;font-weight:300;color:rgba(242,232,208,.7);line-height:1.9;}
+.meth-card strong{color:var(--g2);font-weight:500;}
+
+/* PROCESS */
+.proc-grid{display:grid;grid-template-columns:repeat(5,1fr);max-width:1100px;margin:70px auto 0;position:relative;gap:0;padding:0 24px;}
+.proc-grid::after{content:'';position:absolute;top:35px;left:calc(10% + 24px);right:calc(10% + 24px);height:1px;background:linear-gradient(to right,transparent,var(--g3) 20%,var(--fire) 50%,var(--g3) 80%,transparent);opacity:.22;}
+.proc-step{text-align:center;padding:0 14px;transition:transform .4s;}
+.proc-step:hover{transform:translateY(-6px);}
+.proc-n{width:70px;height:70px;border-radius:50%;border:1px solid rgba(212,168,67,.25);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;background:var(--ink2);font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--g1);transition:all .4s;position:relative;z-index:1;}
+.proc-step:hover .proc-n{background:linear-gradient(135deg,rgba(212,168,67,.18),rgba(201,58,12,.12));border-color:var(--g1);box-shadow:0 0 40px rgba(212,168,67,.22);}
+.proc-t{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--g2);margin-bottom:10px;}
+.proc-d{font-size:12px;font-weight:300;color:var(--muted);line-height:1.85;}
+/* center last step */
+.proc-step:last-child{grid-column:3;margin-top:50px;}
+.proc-step:last-child .proc-n{border-color:var(--g1);background:linear-gradient(135deg,rgba(212,168,67,.12),rgba(201,58,12,.08));box-shadow:0 0 30px rgba(212,168,67,.15);}
+
+/* TEAM */
+.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:60px;}
+.team-card{background:var(--card);padding:46px 38px;position:relative;overflow:hidden;transition:transform .5s cubic-bezier(.16,1,.3,1),box-shadow .5s;}
+.team-card:hover{transform:translateY(-8px);box-shadow:0 28px 70px rgba(0,0,0,.5);}
+.team-card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .4s;}
+.team-card:hover::before{opacity:1;}
+.tc1{border-top:2px solid var(--g1);}.tc1::before{background:linear-gradient(135deg,rgba(212,168,67,.06),transparent);}
+.tc2{border-top:2px solid var(--fire);}.tc2::before{background:linear-gradient(135deg,rgba(201,58,12,.05),transparent);}
+.tc3{border-top:2px solid var(--g2);}.tc3::before{background:linear-gradient(135deg,rgba(240,201,106,.05),transparent);}
+.tc-bg{position:absolute;top:10px;right:16px;font-family:'Playfair Display',serif;font-size:80px;font-weight:900;line-height:1;font-style:italic;pointer-events:none;}
+.tc1 .tc-bg{color:rgba(212,168,67,.04);}
+.tc2 .tc-bg{color:rgba(201,58,12,.05);}
+.tc3 .tc-bg{color:rgba(240,201,106,.04);}
+.tc-role{font-size:9px;font-weight:700;letter-spacing:4px;text-transform:uppercase;margin-bottom:14px;}
+.tc1 .tc-role{color:var(--g1);}.tc2 .tc-role{color:var(--fire2);}.tc3 .tc-role{color:var(--g2);}
+.tc-name{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--white);margin-bottom:10px;}
+.tc-desc{font-size:13px;font-weight:300;color:var(--muted);line-height:1.9;margin-bottom:22px;}
+.tc-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.tc-tag{font-size:9px;letter-spacing:1.5px;padding:5px 12px;font-weight:600;}
+.tc1 .tc-tag{background:rgba(212,168,67,.07);border:1px solid rgba(212,168,67,.2);color:var(--g2);}
+.tc2 .tc-tag{background:rgba(201,58,12,.07);border:1px solid rgba(201,58,12,.2);color:var(--fire2);}
+.tc3 .tc-tag{background:rgba(240,201,106,.06);border:1px solid rgba(240,201,106,.18);color:var(--g2);}
+
+/* BRANDS */
+.brands-sec{padding:80px 0;z-index:2;position:relative;}
+.brands-lbl{text-align:center;font-size:10px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:rgba(212,168,67,.4);margin-bottom:40px;}
+.brands-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;}
+.chip{background:rgba(212,168,67,.05);border:1px solid rgba(212,168,67,.12);padding:10px 20px;font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--muted);transition:all .3s;cursor:default;}
+.chip:hover{background:rgba(212,168,67,.1);border-color:rgba(212,168,67,.35);color:var(--g2);transform:translateY(-3px);}
+
+/* CTA */
+.cta-sec{padding:130px 24px;text-align:center;position:relative;overflow:hidden;z-index:2;}
+.cta-glow{position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 50%,rgba(212,168,67,.11),transparent 70%);}
+.cta-sec h2{font-family:'Playfair Display',serif;font-size:clamp(46px,7vw,90px);font-weight:700;color:var(--white);margin-bottom:20px;position:relative;line-height:1;}
+.cta-sec h2 em{font-style:italic;color:var(--g2);}
+.cta-sec>p{font-size:14px;color:var(--muted);letter-spacing:3px;margin-bottom:50px;position:relative;}
+.cta-line{width:60px;height:1px;margin:0 auto 50px;background:linear-gradient(to right,var(--g1),var(--fire));}
+
+/* VIDEO MODAL */
+#vid-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:9990;align-items:center;justify-content:center;flex-direction:column;gap:20px;}
+.vid-inner{position:relative;width:min(900px,93vw);}
+.vid-close{position:absolute;top:-46px;right:0;background:none;border:1px solid rgba(212,168,67,.35);color:var(--g2);font-size:11px;letter-spacing:3px;padding:9px 22px;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .3s;}
+.vid-close:hover{background:rgba(212,168,67,.08);border-color:var(--g1);}
+.vid-wrap{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border:1px solid rgba(212,168,67,.18);}
+.vid-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none;}
+.vid-caption{text-align:center;font-size:10px;letter-spacing:3px;color:var(--muted);margin-top:16px;text-transform:uppercase;}
+
+/* FOOTER */
+footer{border-top:1px solid rgba(212,168,67,.1);padding:54px 24px;text-align:center;position:relative;z-index:2;}
+footer p{font-size:11px;color:rgba(212,168,67,.32);letter-spacing:2px;text-transform:uppercase;margin-top:8px;line-height:1.8;}
+footer strong{color:rgba(212,168,67,.58);}
+.footer-social{display:inline-flex;align-items:center;gap:10px;margin-top:18px;padding:10px 24px;border:1px solid rgba(212,168,67,.2);transition:all .3s;text-decoration:none;}
+.footer-social:hover{border-color:var(--g1);background:rgba(212,168,67,.06);}
+.footer-social span{font-size:11px;font-weight:600;letter-spacing:3px;color:var(--g2);text-transform:uppercase;}
+
+/* REVEAL ANIMATIONS */
+.r{opacity:0;transform:translateY(55px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1);}
+.r.on{opacity:1;transform:translateY(0);}
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}.d5{transition-delay:.40s}
+.rl{opacity:0;transform:translateX(-45px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1);}
+.rl.on{opacity:1;transform:translateX(0);}
+.rr{opacity:0;transform:translateX(45px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1);}
+.rr.on{opacity:1;transform:translateX(0);}
+.rs{opacity:0;transform:scale(.92);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1);}
+.rs.on{opacity:1;transform:scale(1);}
+
+/* MV text bigger */
+.mv-text{font-size:17px;font-weight:400;color:rgba(242,232,208,.85);line-height:1.7;font-style:italic;}
+
+/* METHODOLOGY 3-card */
+.meth-three{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:50px;}
+.meth-mini{background:var(--card);padding:40px 32px;position:relative;transition:transform .4s,box-shadow .4s;border-top:1px solid rgba(212,168,67,.12);}
+.meth-mini:hover{transform:translateY(-6px);box-shadow:0 20px 50px rgba(0,0,0,.4);}
+.featured-mini{border-top:2px solid var(--g1);background:linear-gradient(160deg,rgba(212,168,67,.08),var(--card));}
+.meth-mini-icon{font-size:28px;margin-bottom:16px;display:block;}
+.meth-mini h4{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--white);margin-bottom:12px;line-height:1.2;}
+.meth-mini p{font-size:14px;font-weight:300;color:var(--muted);line-height:1.85;}
+@media(max-width:768px){.meth-three{grid-template-columns:1fr;}}
+
+/* METH-SEC padding reduction */
+.meth-sec{padding:80px 0;}
+
+
+  .stats-inner{grid-template-columns:repeat(2,1fr);}
+  .stat:nth-child(2){border-right:none;}
+  .proc-grid{grid-template-columns:1fr 1fr;}.proc-grid::after{display:none;}
+  .proc-step:last-child{grid-column:auto;margin-top:0;}
+  *{cursor:auto !important;}#cur-outer,#cur-inner,#cur-trail-container{display:none;}
+}
+</style>
+</head>
+<body>
+
+<canvas id="cursor-canvas" style="position:fixed;inset:0;pointer-events:none;z-index:9999;width:100vw;height:100vh;"></canvas>
+<canvas id="canvas"></canvas>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hr1"></div><div class="hr2"></div><div class="hr3"></div>
+  <div class="hero-yr">2026</div>
+  <div class="logo-wrap">
+    <div class="logo-glow-ring"></div>
+    <svg class="logo-svg" viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#F0C96A"/><stop offset="45%" stop-color="#D4A843"/><stop offset="100%" stop-color="#C93A0C"/>
+        </linearGradient>
+        <filter id="glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+      <circle cx="65" cy="65" r="60" fill="none" stroke="url(#lg1)" stroke-width=".8" opacity=".22"/>
+      <circle cx="65" cy="65" r="44" fill="none" stroke="url(#lg1)" stroke-width=".5" opacity=".13"/>
+      <rect x="36" y="22" width="10" height="86" rx="1" fill="url(#lg1)" filter="url(#glow)"/>
+      <polygon points="46,65 94,22 104,22 56,65" fill="url(#lg1)" filter="url(#glow)"/>
+      <polygon points="46,65 94,108 104,108 56,65" fill="url(#lg1)" filter="url(#glow)"/>
+    </svg>
+  </div>
+  <div class="eyebrow"><span>✦</span> Marketing Digital · Colombia · 2026 <span>✦</span></div>
+  <h1 class="hero-h1">Kaizen<br><em>Leap</em></h1>
+  <p class="hero-sub">Presencia · Contenido · Impacto · Resultados</p>
+  <div class="hero-line"></div>
+  <p class="hero-p">Tu marca tiene <strong>5 segundos</strong> para impresionar.<br>Nosotros nos aseguramos de que esos 5 segundos<br>se conviertan en <strong>clientes reales</strong>.</p>
+  <div class="scroll-ind"><span>Scroll</span><div class="scroll-track"></div></div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stats-inner">
+    <div class="stat r d1">
+      <span class="stat-n" data-target="50" data-suffix="+">0</span>
+      <span class="stat-l">Proyectos Entregados</span>
+    </div>
+    <div class="stat r d2">
+      <span class="stat-n" data-target="200" data-suffix="+">0</span>
+      <span class="stat-l">Piezas de Contenido</span>
+    </div>
+    <div class="stat r d3">
+      <span class="stat-n" data-target="100" data-suffix="%">0</span>
+      <span class="stat-l">Contenido Original</span>
+    </div>
+    <div class="stat r d4">
+      <span class="stat-n" data-text="4K">4K</span>
+      <span class="stat-l">Calidad de Producción</span>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="sec">
+<div class="wrap">
+  <div class="sec-eye r">Nuestra Propuesta</div>
+  <h2 class="sec-h r">Tu imagen lo dice<br><em>todo</em></h2>
+  <div class="about-grid">
+    <div class="about-body rl">
+      <p><strong>Kaizen Leap</strong> transforma cómo se ve tu marca. Creamos contenido visual que impacta desde el primer frame, construye credibilidad y hace que tu audiencia quiera más.</p>
+      <p>Cada pieza que producimos cuida la imagen, el estilo y el mensaje. Porque en el mundo digital, <strong>cómo te ves es cómo te perciben</strong>.</p>
+      <div class="pill-row">
+        <div class="pill">Video</div>
+        <div class="pill">Lives</div>
+        <div class="pill">Fotografía</div>
+        <div class="pill">Instagram</div>
+        <div class="pill">Facebook</div>
+        <div class="pill">YouTube</div>
+        <div class="pill">TikTok</div>
+        <div class="pill">Meta Ads</div>
+        <div class="pill">Gestión de Redes</div>
+        <div class="pill">Estrategia Digital</div>
+      </div>
+    </div>
+    <div class="rr">
+      <div class="mv-unified">
+        <div class="mv-header">
+          <div class="mv-header-dot"></div>
+          <div class="mv-header-tag">Nuestro Propósito</div>
+        </div>
+        <div class="mv-block">
+          <div class="mv-block-label">Misión</div>
+          <p class="mv-text">Crear contenido visual que conecta, vende y hace crecer tu marca.</p>
+        </div>
+        <div class="mv-block">
+          <div class="mv-block-label">Visión</div>
+          <p class="mv-text">Ser el aliado creativo número uno de las marcas en Colombia.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<hr class="div-line">
+
+<!-- PACKAGES -->
+<section class="pkg-sec" id="paquetes">
+  <div class="pkg-sec-bg"></div>
+  <div class="wrap" style="text-align:center;margin-bottom:0;">
+    <div class="sec-eye r" style="justify-content:center;">Nuestros Paquetes</div>
+    <h2 class="sec-h r" style="text-align:center;">Escoge el plan que<br><em>lleva tu marca al siguiente nivel</em></h2>
+    <div class="pkg-head r">
+      <p>Cada paquete incluye producción profesional, gestión de redes y reporte mensual. El presupuesto de campañas publicitarias es aparte y lo define el cliente.</p>
+    </div>
+  </div>
+  <div class="pkg-grid wrap">
+
+    <!-- PKG 1 -->
+    <div class="pkg r d1">
+      <div class="pkg-bg-n">01</div>
+      <span class="pkg-eyebrow">Plan Presencia</span>
+      <div class="pkg-name">Presencia</div>
+      <p class="pkg-tagline">Para marcas listas para renovar su imagen y conquistar sus redes con contenido profesional.</p>
+      <ul class="feat-list">
+        <li class="t1">1 Video Comercial Profesional</li>
+        <li class="t1">Reels + TikToks — <strong>10 videos</strong></li>
+        <li class="t2">30 Fotografías profesionales editadas</li>
+        <li class="t2">9 Historias mensuales dinámicas</li>
+        <li class="t3">4 Piezas gráficas mensuales</li>
+        <li class="t3">Copys con voz de marca</li>
+        <li class="t4">Calendario editorial y monitoreo</li>
+        <li class="t4">1 Campaña publicitaria gestionada</li>
+        <li class="t4">Reporte mensual de métricas</li>
+        <li class="tp">Presentador/a asignado para tu marca</li>
+      </ul>
+      <div class="pkg-price">$2.000.000</div>
+      <div class="pkg-per">COP · mensual</div>
+    </div>
+
+    <!-- PKG 2 FEATURED -->
+    <div class="pkg pkg-featured r d2">
+      <div class="feat-badge">★ Más Popular</div>
+      <div class="pkg-bg-n">02</div>
+      <span class="pkg-eyebrow">Plan Expansión</span>
+      <div class="pkg-name">Expansión</div>
+      <p class="pkg-tagline">Para marcas ambiciosas que quieren contenido constante, audiencias más grandes y más conversiones.</p>
+      <ul class="feat-list">
+        <li class="t1">2 Videos Comerciales Profesionales</li>
+        <li class="t1">Reels + TikToks — <strong>16 videos</strong></li>
+        <li class="t2">45 Fotografías profesionales editadas</li>
+        <li class="t2">18 Historias mensuales dinámicas</li>
+        <li class="t3">8 Piezas gráficas mensuales</li>
+        <li class="t3">Copys con voz de marca</li>
+        <li class="t4">Calendario editorial mensual</li>
+        <li class="t4">2 Campañas publicitarias gestionadas</li>
+        <li class="t4">Monitoreo de interacción activo</li>
+        <li class="t4">Reporte mensual completo de métricas</li>
+        <li class="tp">Presentador/a asignado para tu marca</li>
+      </ul>
+      <div class="pkg-price">$4.000.000</div>
+      <div class="pkg-per">COP · mensual</div>
+    </div>
+
+    <!-- PKG 3 -->
+    <div class="pkg r d3">
+      <div class="pkg-bg-n">03</div>
+      <span class="pkg-eyebrow">Plan Influencia</span>
+      <div class="pkg-name">Influencia</div>
+      <p class="pkg-tagline">Para marcas que quieren dominar las redes y delegar completamente su estrategia visual y digital.</p>
+      <ul class="feat-list">
+        <li class="t1">3 Videos Comerciales Profesionales</li>
+        <li class="t1">Reels + TikToks — <strong>24 videos</strong></li>
+        <li class="t2">60 Fotografías profesionales editadas</li>
+        <li class="t2">27 Historias mensuales dinámicas</li>
+        <li class="t3">15 Piezas gráficas mensuales</li>
+        <li class="t3">Copys con voz de marca</li>
+        <li class="t3">Gestión completa: IG · FB · TikTok · YouTube</li>
+        <li class="t4">Gestión de comunidad automatizada</li>
+        <li class="t4">4 Campañas publicitarias gestionadas</li>
+        <li class="t4">Calendario editorial mensual</li>
+        <li class="t4">Reporte mensual de métricas</li>
+        <li class="tp">Presentador/a asignado para tu marca</li>
+      </ul>
+      <div class="pkg-price">$6.000.000</div>
+      <div class="pkg-per">COP · mensual</div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="div-line">
+
+<!-- METHODOLOGY — SHORT VERSION -->
+<section class="meth-sec">
+<div class="wrap">
+  <div class="sec-eye r">Metodología</div>
+  <h2 class="sec-h r">Lo que nos hace<br><em>diferentes</em></h2>
+  <div class="meth-three r">
+    <div class="meth-mini">
+      <div class="meth-mini-icon">📅</div>
+      <h4>Cronograma mensual</h4>
+      <p>Cada mes arranca con un plan claro: qué se produce, cuándo se publica y con qué objetivo. Todo definido antes de grabar.</p>
+    </div>
+    <div class="meth-mini featured-mini">
+      <div class="meth-mini-icon">📈</div>
+      <h4>Proyección a 6 meses</h4>
+      <p>Diseñamos una estrategia por etapas que evoluciona cada mes según los resultados. Siempre avanzando.</p>
+    </div>
+    <div class="meth-mini">
+      <div class="meth-mini-icon">✓</div>
+      <h4>Entregas con fecha</h4>
+      <p>Cada pieza tiene fecha de entrega. Cada mes tiene informe. Sin improvisación, sin desaparecer.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<hr class="div-line">
+<section class="sec">
+<div class="wrap">
+  <div class="sec-eye r">Nuestro Equipo</div>
+  <h2 class="sec-h r">Las personas detrás<br>de <em>tu contenido</em></h2>
+  <p style="font-size:15px;font-weight:300;color:var(--muted);max-width:540px;line-height:1.9;margin-bottom:0;" class="r">Cuando contratas Kaizen Leap, no trabajas con una sola persona. Trabajas con un equipo dedicado a hacer crecer tu marca.</p>
+  <div class="team-grid">
+    <div class="team-card tc1 r d1">
+      <div class="tc-bg">D</div>
+      <div class="tc-role">Director Creativo</div>
+      <div class="tc-name">Kaizen Leap</div>
+      <p class="tc-desc">Estrategia, dirección de grabaciones, gestión del cliente, aprobación de contenido y entrega de resultados. El cerebro detrás de cada campaña.</p>
+      <div class="tc-tags"><span class="tc-tag">ESTRATEGIA</span><span class="tc-tag">DIRECCIÓN</span><span class="tc-tag">RESULTADOS</span></div>
+    </div>
+    <div class="team-card tc2 r d2">
+      <div class="tc-bg">E</div>
+      <div class="tc-role">Editor de Contenido</div>
+      <div class="tc-name">Producción Visual</div>
+      <p class="tc-desc">Edición profesional de todos los videos, reels y TikToks. Adapta cada pieza al formato correcto de cada red. Entrega en máximo 3 días hábiles.</p>
+      <div class="tc-tags"><span class="tc-tag">EDICIÓN</span><span class="tc-tag">FORMATOS</span><span class="tc-tag">RAPIDEZ</span></div>
+    </div>
+    <div class="team-card tc3 r d3">
+      <div class="tc-bg">P</div>
+      <div class="tc-role">Presentador/a de Marca</div>
+      <div class="tc-name">Cara de tu Marca</div>
+      <p class="tc-desc">Acompaña cada grabación para aparecer en cámara, presentar productos, conectar con la audiencia y elevar la calidad visual de cada pieza producida.</p>
+      <div class="tc-tags"><span class="tc-tag">EN CÁMARA</span><span class="tc-tag">CONEXIÓN</span><span class="tc-tag">PRODUCCIÓN</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<hr class="div-line">
+
+<!-- VIDEO MODAL -->
+<div id="vid-modal">
+  <div class="vid-inner">
+    <button class="vid-close" onclick="closeVid()">✕ CERRAR</button>
+    <div class="vid-wrap">
+      <iframe id="yt-frame" src="" allow="autoplay;encrypted-media" allowfullscreen></iframe>
+    </div>
+    <p class="vid-caption">Kaizen Leap · Portafolio de Producción 2026</p>
+  </div>
+</div>
+
+<!-- CTA -->
+<section class="cta-sec" id="contacto">
+  <div class="cta-glow"></div>
+  <h2 class="r">¿Tu marca lista para<br><em>el gran salto?</em></h2>
+  <div class="cta-line r"></div>
+  <p class="r">Hablemos hoy · www.kaizenleap.com</p>
+  <div class="cta-row r">
+    <a href="https://wa.me/573181066522?text=Hola%20Kaizen%20Leap!%20Vi%20tu%20propuesta%20y%20me%20interesa%20saber%20m%C3%A1s%20sobre%20lo%20que%20hacen.%20%C2%BFMe%20cuentas%20c%C3%B3mo%20trabajan%3F" class="btn-gold">Escríbenos al WhatsApp</a>
+    <button onclick="openVid()" class="btn-ghost">▶ Ver Portafolio</button>
+  </div>
+  <p style="margin-top:22px;font-size:11px;letter-spacing:2px;color:rgba(212,168,67,.3);text-transform:uppercase;position:relative;">Producción audiovisual · Estrategia digital · Resultados reales</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" width="54" height="54" style="margin-bottom:16px;opacity:.65;filter:drop-shadow(0 0 12px rgba(212,168,67,.3));">
+    <defs><linearGradient id="fg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F0C96A"/><stop offset="100%" stop-color="#C93A0C"/></linearGradient></defs>
+    <circle cx="40" cy="40" r="36" fill="none" stroke="url(#fg)" stroke-width=".8" opacity=".28"/>
+    <rect x="22" y="12" width="6" height="56" rx="1" fill="url(#fg)"/>
+    <polygon points="28,40 58,12 65,12 35,40" fill="url(#fg)"/>
+    <polygon points="28,40 58,68 65,68 35,40" fill="url(#fg)"/>
+  </svg>
+  <p><strong>Kaizen Leap Marketing</strong> · 2026</p>
+  <p style="margin-top:4px;font-size:9px;letter-spacing:3px;opacity:.45;">Mejora Continua · El Gran Salto · www.kaizenleap.com</p>
+  <a href="https://www.instagram.com/kaizenleap" target="_blank" class="footer-social" style="margin-top:20px;">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="20" height="20" rx="5" stroke="#D4A843" stroke-width="1.5"/><circle cx="12" cy="12" r="4" stroke="#D4A843" stroke-width="1.5"/><circle cx="17.5" cy="6.5" r="1" fill="#D4A843"/></svg>
+    <span>@kaizenleap</span>
+  </a>
+</footer>
+
+<script>
+/* ── CANVAS CURSOR ── */
+(function(){
+  // Force hide system cursor everywhere
+  const style = document.createElement('style');
+  style.textContent = '*{cursor:none!important;}';
+  document.head.appendChild(style);
+
+  const cc = document.getElementById('cursor-canvas');
+  const ctx = cc.getContext('2d');
+  let W, H;
+  function resize(){
+    W = cc.width = window.innerWidth;
+    H = cc.height = window.innerHeight;
+    cc.style.width = W+'px';
+    cc.style.height = H+'px';
+  }
+  resize(); window.addEventListener('resize', resize);
+
+  let mx=0, my=0, lx=0, ly=0;
+  let isHover=false, isClick=false;
+  let angle=0;
+  let trail=[];
+
+  document.addEventListener('mousemove', e=>{ mx=e.clientX; my=e.clientY; });
+  document.addEventListener('mousedown', ()=>{ isClick=true; });
+  document.addEventListener('mouseup',   ()=>{ isClick=false; });
+
+  document.querySelectorAll('a,button,.pkg,.stat,.pill,.team-card,.meth-mini,.mv-unified,.proc-step').forEach(el=>{
+    el.addEventListener('mouseenter', ()=>isHover=true);
+    el.addEventListener('mouseleave', ()=>isHover=false);
+  });
+
+  function drawDiamond(x, y, size, rot, alpha, colorStop){
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(rot);
+    ctx.globalAlpha = alpha;
+
+    // Outer diamond
+    const grad = ctx.createLinearGradient(-size,-size,size,size);
+    grad.addColorStop(0, '#F0C96A');
+    grad.addColorStop(1, colorStop || '#C93A0C');
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = isHover ? 1.8 : 1.2;
+    ctx.beginPath();
+    ctx.moveTo(0, -size);
+    ctx.lineTo(size, 0);
+    ctx.lineTo(0, size);
+    ctx.lineTo(-size, 0);
+    ctx.closePath();
+    ctx.stroke();
+
+    // Cross hairs
+    ctx.globalAlpha = alpha * 0.35;
+    ctx.strokeStyle = '#F0C96A';
+    ctx.lineWidth = 0.7;
+    ctx.beginPath();
+    ctx.moveTo(0, -size+4); ctx.lineTo(0, size-4);
+    ctx.moveTo(-size+4, 0); ctx.lineTo(size-4, 0);
+    ctx.stroke();
+
+    // Corner ticks
+    ctx.globalAlpha = alpha;
+    ctx.strokeStyle = '#F0C96A';
+    ctx.lineWidth = 2;
+    const tk = size * 0.28;
+    [[0,-size],[size,0],[0,size],[-size,0]].forEach(([px,py])=>{
+      ctx.beginPath();
+      ctx.moveTo(px, py);
+      ctx.lineTo(px*(1-tk/size), py*(1-tk/size));
+      ctx.stroke();
+    });
+
+    ctx.restore();
+  }
+
+  function drawDot(x, y, alpha){
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    const r = isClick ? 8 : isHover ? 4 : 2.5;
+    const grd = ctx.createRadialGradient(x,y,0,x,y,r*3);
+    grd.addColorStop(0, isClick ? '#ffffff' : isHover ? '#E8520A' : '#F0C96A');
+    grd.addColorStop(1, 'transparent');
+    ctx.fillStyle = grd;
+    ctx.beginPath();
+    ctx.arc(x, y, r*3, 0, Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle = isClick ? '#fff' : isHover ? '#E8520A' : '#F0C96A';
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function loop(){
+    ctx.clearRect(0, 0, W, H);
+
+    // Smooth follow
+    lx += (mx - lx) * 0.1;
+    ly += (my - ly) * 0.1;
+
+    // Trail
+    trail.push({x:mx, y:my, life:1, r:Math.random()*2.5+1, c:Math.random()>.5?'212,168,67':'201,58,12'});
+    if(trail.length > 18) trail.shift();
+    trail.forEach((p,i)=>{
+      p.life -= 0.055;
+      if(p.life<=0) return;
+      ctx.save();
+      ctx.globalAlpha = p.life * 0.55;
+      ctx.fillStyle = `rgba(${p.c},1)`;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r * p.life, 0, Math.PI*2);
+      ctx.fill();
+      ctx.restore();
+    });
+    trail = trail.filter(p=>p.life>0);
+
+    // Rotate
+    angle += isHover ? 0.04 : 0.012;
+
+    // Outer diamond (lagging)
+    const outerSize = isHover ? 24 : 18;
+    drawDiamond(lx, ly, outerSize, angle, isClick ? 0.4 : 0.85);
+
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+
+/* PARTICLES */
+const cnv=document.getElementById('canvas'),ctx=cnv.getContext('2d');
+let W,H,pts=[];
+function resize(){W=cnv.width=window.innerWidth;H=cnv.height=window.innerHeight;}
+resize();window.addEventListener('resize',resize);
+for(let i=0;i<80;i++){pts.push({x:Math.random()*3000,y:Math.random()*4000,vx:(Math.random()-.5)*.25,vy:(Math.random()-.5)*.18,r:Math.random()*1.6+.2,a:Math.random()*.8+.1,c:Math.random()>.5?'212,168,67':'201,58,12'});}
+(function drawPts(){
+  ctx.clearRect(0,0,W,H);
+  pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;ctx.beginPath();ctx.arc(p.x%W,p.y%H,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(${p.c},${p.a*.55})`;ctx.fill();});
+  requestAnimationFrame(drawPts);
+})();
+
+/* REVEAL */
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('on');});},{threshold:.08});
+document.querySelectorAll('.r,.rl,.rr,.rs').forEach(el=>obs.observe(el));
+
+/* COUNTER */
+function animCount(el){
+  const target=+el.dataset.target,suffix=el.dataset.suffix||'';
+  if(!target)return;
+  const dur=2000,start=performance.now();
+  (function tick(now){
+    const p=Math.min((now-start)/dur,1),ease=1-Math.pow(1-p,4);
+    el.textContent=Math.round(ease*target)+suffix;
+    if(p<1)requestAnimationFrame(tick);
+  })(start);
+}
+const cObs=new IntersectionObserver(e=>{
+  e.forEach(x=>{if(x.isIntersecting){const el=x.target.querySelector('.stat-n');if(el&&!el.dataset.done&&el.dataset.target){el.dataset.done=1;animCount(el);}}});
+},{threshold:.4});
+document.querySelectorAll('.stat').forEach(s=>cObs.observe(s));
+
+/* VIDEO MODAL */
+const VIDEO_URL='https://drive.google.com/file/d/1mQ0dNHOlU4o69zKr8gRGAMwfNGBo2S61/preview';
+function openVid(){document.getElementById('yt-frame').src=VIDEO_URL;document.getElementById('vid-modal').style.display='flex';document.body.style.overflow='hidden';}
+function closeVid(){document.getElementById('vid-modal').style.display='none';document.getElementById('yt-frame').src='';document.body.style.overflow='';}
+document.getElementById('vid-modal').addEventListener('click',function(e){if(e.target===this)closeVid();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeVid();});
+
+/* PKG 3D TILT */
+document.querySelectorAll('.pkg').forEach(card=>{
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+    card.style.transform=`translateY(-10px) perspective(700px) rotateY(${x*7}deg) rotateX(${-y*5}deg)`;
+  });
+  card.addEventListener('mouseleave',()=>{card.style.transform='';});
+});
+
+/* STAGGER FEATURE LIST on hover */
+document.querySelectorAll('.pkg').forEach(pkg=>{
+  pkg.addEventListener('mouseenter',()=>{
+    pkg.querySelectorAll('.feat-list li').forEach((li,i)=>{
+      li.style.transitionDelay=i*30+'ms';
+      li.style.transform='translateX(4px)';
+    });
+  });
+  pkg.addEventListener('mouseleave',()=>{
+    pkg.querySelectorAll('.feat-list li').forEach(li=>{li.style.transitionDelay='0ms';li.style.transform='';});
+  });
+});
+
+/* PARALLAX on hero elements */
+document.addEventListener('mousemove',e=>{
+  const cx=window.innerWidth/2,cy=window.innerHeight/2;
+  const dx=(e.clientX-cx)/cx,dy=(e.clientY-cy)/cy;
+  document.querySelectorAll('.hr1,.hr2,.hr3').forEach((r,i)=>{
+    const s=(i+1)*3;r.style.transform=`translate(calc(-50% + ${dx*s}px),calc(-50% + ${dy*s}px)) rotate(${Date.now()/((i+1)*800+200)}deg)`;
+  });
+});
+</script>
+</body>
+</html>
