@@ -14,8 +14,8 @@
   --c1:#F0C96A;--c2:#B8D8FF;--c3:#B0E8C0;--c4:#D8C0F0;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;cursor:none !important;}
-html{scroll-behavior:smooth;}
-body{background:var(--ink);color:var(--cream);font-family:'Outfit',sans-serif;overflow-x:hidden;}
+html{scroll-behavior:smooth;overflow-x:hidden;max-width:100vw;}
+body{background:var(--ink);color:var(--cream);font-family:'Outfit',sans-serif;overflow-x:hidden;max-width:100vw;position:relative;}
 
 /* CURSOR - canvas based */
 #cursor-canvas{position:fixed;top:0;left:0;pointer-events:none;z-index:9999;}
@@ -27,9 +27,9 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;position:relative;overflow:hidden;padding:80px 24px 120px;z-index:2;}
 .hero-glow{position:absolute;inset:0;background:radial-gradient(ellipse 90% 70% at 50% 20%,rgba(212,168,67,.13) 0%,transparent 60%),radial-gradient(ellipse 50% 40% at 85% 75%,rgba(201,58,12,.09) 0%,transparent 55%),radial-gradient(ellipse 40% 35% at 15% 80%,rgba(212,168,67,.06) 0%,transparent 55%);}
 .hr1,.hr2,.hr3{position:absolute;border-radius:50%;border:1px solid rgba(212,168,67,.06);}
-.hr1{width:700px;height:700px;top:50%;left:50%;transform:translate(-50%,-50%);animation:spin 60s linear infinite;}
-.hr2{width:480px;height:480px;top:50%;left:50%;transform:translate(-50%,-50%);animation:spin 38s linear infinite reverse;}
-.hr3{width:290px;height:290px;top:50%;left:50%;transform:translate(-50%,-50%);animation:spin 24s linear infinite;border-color:rgba(201,58,12,.07);}
+.hr1{width:min(700px,90vw);height:min(700px,90vw);top:50%;left:50%;transform:translate(-50%,-50%);animation:spin 60s linear infinite;}
+.hr2{width:min(480px,75vw);height:min(480px,75vw);top:50%;left:50%;transform:translate(-50%,-50%);animation:spin 38s linear infinite reverse;}
+.hr3{width:min(290px,60vw);height:min(290px,60vw);top:50%;left:50%;transform:translate(-50%,-50%);animation:spin 24s linear infinite;border-color:rgba(201,58,12,.07);}
 @keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg);}}
 .hero-yr{position:absolute;font-family:'Playfair Display',serif;font-size:clamp(180px,28vw,360px);font-weight:900;font-style:italic;color:rgba(212,168,67,.035);top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap;pointer-events:none;line-height:1;animation:drift 9s ease-in-out infinite;}
 @keyframes drift{0%,100%{transform:translate(-50%,-50%) scale(1);}50%{transform:translate(-50%,-52%) scale(1.02);}}
@@ -265,75 +265,63 @@ footer strong{color:rgba(212,168,67,.58);}
 /* METH-SEC padding reduction */
 .meth-sec{padding:80px 0;}
 
-/* ══════════════════════════════════
-   RESPONSIVE — TABLET (≤900px)
-══════════════════════════════════ */
-@media(max-width:900px){
-  .pkg-grid{grid-template-columns:1fr;}
-  .about-grid{grid-template-columns:1fr;gap:40px;}
-  .team-grid{grid-template-columns:1fr;}
-  .meth-three{grid-template-columns:1fr;}
-  .meth-two{grid-template-columns:1fr;}
-  .stats-inner{grid-template-columns:repeat(2,1fr);}
-  .stat:nth-child(2){border-right:none;}
-  .proc-grid{grid-template-columns:1fr 1fr;}
-  .proc-grid::after{display:none;}
-  .proc-step:last-child{grid-column:auto;margin-top:0;}
-}
+/* ══════════════════════════════════════════════
+   RESPONSIVE — EVERYTHING ≤ 900px
+══════════════════════════════════════════════ */
+@media screen and (max-width:900px){
+  /* Kill horizontal overflow at root level */
+  html,body{overflow-x:hidden !important;width:100% !important;max-width:100% !important;}
 
-/* ══════════════════════════════════
-   RESPONSIVE — MOBILE (≤600px)
-══════════════════════════════════ */
-@media(max-width:600px){
-  /* Cursor off on touch devices */
-  *{cursor:auto !important;}
-  #cursor-canvas{display:none;}
+  /* Grids → single column */
+  .pkg-grid{display:flex !important;flex-direction:column !important;gap:4px !important;}
+  .about-grid{display:flex !important;flex-direction:column !important;gap:36px !important;}
+  .team-grid{display:flex !important;flex-direction:column !important;gap:4px !important;}
+  .meth-three{display:flex !important;flex-direction:column !important;gap:4px !important;}
+  .meth-two{display:flex !important;flex-direction:column !important;gap:4px !important;}
+  .stats-inner{grid-template-columns:repeat(2,1fr) !important;}
+  .stat:nth-child(2){border-right:none !important;}
+  .stat:nth-child(3){border-right:1px solid rgba(212,168,67,.08) !important;}
+  .stat:nth-child(4){border-right:none !important;}
+  .proc-grid{grid-template-columns:1fr 1fr !important;}
+  .proc-grid::after{display:none !important;}
+  .proc-step:last-child{grid-column:auto !important;margin-top:0 !important;}
 
-  /* Hero */
-  .hero{padding:60px 20px 100px;}
-  .logo-svg{width:90px;height:90px;}
+  /* Packages */
+  .pkg{width:100% !important;max-width:100% !important;padding:36px 22px !important;}
+  .pkg-grid{width:100% !important;}
+  .pkg-name{font-size:34px !important;}
+  .pkg-price{font-size:40px !important;}
+
+  /* Hero rings — clamp to viewport */
+  .hr1,.hr2,.hr3{overflow:hidden;}
+
+  /* Team cards */
+  .team-card{padding:34px 22px !important;}
+
+  /* Wrap padding */
+  .wrap{padding:0 16px !important;}
 
   /* Sections */
-  .sec{padding:70px 0;}
-  .wrap{padding:0 18px;}
-
-  /* Stats — 2 col */
-  .stats-inner{grid-template-columns:repeat(2,1fr);}
-  .stat{padding:30px 12px;}
-  .stat-n{font-size:40px;}
-  .stat:nth-child(2){border-right:none;}
-  .stat:nth-child(3){border-right:1px solid rgba(212,168,67,.08);}
-  .stat:nth-child(4){border-right:none;}
-
-  /* Packages — single col stacked */
-  .pkg-grid{grid-template-columns:1fr;gap:2px;}
-  .pkg{padding:40px 24px;}
-  .pkg-name{font-size:32px;}
-  .pkg-price{font-size:38px;}
-
-  /* About */
-  .about-grid{grid-template-columns:1fr;gap:36px;}
-
-  /* Team */
-  .team-grid{grid-template-columns:1fr;}
-  .team-card{padding:36px 24px;}
-
-  /* Methodology */
-  .meth-three{grid-template-columns:1fr;}
-  .meth-two{grid-template-columns:1fr;}
-  .meth-hero{padding:32px 24px;}
-
-  /* Process */
-  .proc-grid{grid-template-columns:1fr 1fr;padding:0 16px;}
-  .proc-grid::after{display:none;}
-  .proc-step:last-child{grid-column:auto;margin-top:0;}
+  .sec,.pkg-sec,.meth-sec{padding:70px 0 !important;}
 
   /* CTA buttons */
-  .cta-row{flex-direction:column;align-items:center;}
-  .btn-gold,.btn-ghost{width:100%;text-align:center;padding:17px 24px;}
+  .cta-row{flex-direction:column !important;align-items:center !important;}
+  .btn-gold,.btn-ghost{width:100% !important;max-width:340px !important;text-align:center !important;box-sizing:border-box !important;}
 
-  /* Sec headings */
-  .sec-h{font-size:clamp(32px,8vw,54px);}
+  /* Headings */
+  .sec-h{font-size:clamp(30px,7vw,52px) !important;}
+  .hero-h1{font-size:clamp(52px,13vw,90px) !important;}
+
+  /* Disable cursor canvas on touch */
+  *{cursor:auto !important;}
+  #cursor-canvas{display:none !important;}
+
+  /* Logo */
+  .logo-svg{width:96px !important;height:96px !important;}
+
+  /* Stats */
+  .stat{padding:28px 10px !important;}
+  .stat-n{font-size:38px !important;}
 }
 </style>
 </head>
@@ -759,7 +747,7 @@ const cnv=document.getElementById('canvas'),ctx=cnv.getContext('2d');
 let W,H,pts=[];
 function resize(){W=cnv.width=window.innerWidth;H=cnv.height=window.innerHeight;}
 resize();window.addEventListener('resize',resize);
-for(let i=0;i<80;i++){pts.push({x:Math.random()*3000,y:Math.random()*4000,vx:(Math.random()-.5)*.25,vy:(Math.random()-.5)*.18,r:Math.random()*1.6+.2,a:Math.random()*.8+.1,c:Math.random()>.5?'212,168,67':'201,58,12'});}
+for(let i=0;i<80;i++){pts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.25,vy:(Math.random()-.5)*.18,r:Math.random()*1.6+.2,a:Math.random()*.8+.1,c:Math.random()>.5?'212,168,67':'201,58,12'});}
 (function drawPts(){
   ctx.clearRect(0,0,W,H);
   pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;ctx.beginPath();ctx.arc(p.x%W,p.y%H,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(${p.c},${p.a*.55})`;ctx.fill();});
